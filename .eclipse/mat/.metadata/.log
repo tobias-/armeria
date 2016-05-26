@@ -1,0 +1,48 @@
+!SESSION 2017-09-05 16:29:34.259 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -data /home/trustin/Workspaces/.eclipse/mat
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:38.649
+!MESSAGE Detected compressed references, because with uncompressed 64-bit references the array at 0x7000003e8 would overlap the array at 0x700000390
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:38.966
+!MESSAGE Wrote threads call stacks to /home/trustin/Sandbox/heap_block_20170824_1803.threads
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:39.062
+!MESSAGE Heap /home/trustin/Sandbox/heap_block_20170824_1803.hprof contains 1,617,926 objects
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:41.109
+!MESSAGE Removed 195,801 unreachable objects using 9,176,928 bytes
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:54.253
+!MESSAGE Detected compressed references, because with uncompressed 64-bit references the array at 0x7000003c8 would overlap the array at 0x700000370
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:54.497
+!MESSAGE Wrote threads call stacks to /home/trustin/Sandbox/heap_block_20170824_1833.threads
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:54.522
+!MESSAGE Heap /home/trustin/Sandbox/heap_block_20170824_1833.hprof contains 1,714,184 objects
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-09-05 16:32:56.350
+!MESSAGE Removed 195,853 unreachable objects using 9,178,840 bytes
+!SESSION 2017-11-28 10:18:17.988 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -data /home/trustin/Workspaces/.eclipse/mat
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-11-28 10:18:39.002
+!MESSAGE Detected compressed references, because with uncompressed 64-bit references the array at 0xfd5802d0 would overlap the array at 0xfd5801f0
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-11-28 10:18:39.345
+!MESSAGE Wrote threads call stacks to /home/trustin/Workspaces/armeria/core/java_pid2867.threads
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-11-28 10:18:39.437
+!MESSAGE Heap /home/trustin/Workspaces/armeria/core/java_pid2867.hprof contains 2,040,024 objects
+
+!ENTRY org.eclipse.mat.ui 1 0 2017-11-28 10:18:41.621
+!MESSAGE Removed 11,934 unreachable objects using 528,088 bytes
