@@ -24,6 +24,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.awaitility.Awaitility.await;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -41,7 +43,6 @@ import com.google.common.base.Strings;
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 import com.google.protobuf.ByteString;
-
 import com.linecorp.armeria.client.ClientBuilder;
 import com.linecorp.armeria.client.ClientRequestContext;
 import com.linecorp.armeria.client.HttpClient;
@@ -93,6 +94,7 @@ public class GrpcServiceServerTest {
 
     // Used to communicate completion to a test when it is not possible to return to the client.
     private static final AtomicReference<Boolean> COMPLETED = new AtomicReference<>();
+    private static final AtomicReference<Boolean> SOCKET_SHUTDOWN = new AtomicReference<>();
 
     private static class UnitTestServiceImpl extends UnitTestServiceImplBase {
 
@@ -225,6 +227,23 @@ public class GrpcServiceServerTest {
                 public void onCompleted() {
                 }
             };
+        }
+
+        @Override
+        public void streamClientCancels2(final SimpleRequest request, final StreamObserver<SimpleResponse> responseObserver) {
+            ((ServerCallStreamObserver)responseObserver).setOnCancelHandler(() -> COMPLETED.set(true));
+            new Thread(() -> {
+                await().untilAsserted(() -> assertThat(SOCKET_SHUTDOWN).hasValue(true));
+                try {
+                    if (!COMPLETED.get()) {
+                        responseObserver.onNext(SimpleResponse.getDefaultInstance());
+                        System.err.println("This shouldn't work. We happily sent data to a closed socket");
+                    }
+                } catch (Throwable e) {
+                    COMPLETED.set(true);
+                }
+            }).start();
+            responseObserver.onNext(SimpleResponse.getDefaultInstance());
         }
     }
 
@@ -433,6 +452,33 @@ public class GrpcServiceServerTest {
         stream.onNext(SimpleRequest.getDefaultInstance());
         await().untilAsserted(() -> assertThat(response).hasValue(SimpleResponse.getDefaultInstance()));
         channel.shutdownNow().awaitTermination(10, TimeUnit.SECONDS);
+        await().untilAsserted(() -> assertThat(COMPLETED).hasValue(true));
+    }
+
+    @Test
+    public void clientSocketClosedHttp3() throws Exception {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("127.0.0.1", server.httpPort())
+                                                      .usePlaintext(true)
+                                                      .build();
+        final UnitTestServiceStub stub = UnitTestServiceGrpc.newStub(channel);
+        final AtomicReference<Boolean> readyToShutDown = new AtomicReference<>(false);
+        stub.streamClientCancels2(SimpleRequest.getDefaultInstance(), new StreamObserver<SimpleResponse>() {
+            @Override
+            public void onNext(SimpleResponse value) {
+                readyToShutDown.set(true);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+        await().untilAsserted(() -> assertThat(readyToShutDown).hasValue(true));
+        channel.shutdownNow().awaitTermination(10, TimeUnit.SECONDS);
+        SOCKET_SHUTDOWN.set(true);
         await().untilAsserted(() -> assertThat(COMPLETED).hasValue(true));
     }
 
