@@ -37,6 +37,7 @@ import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
 import com.linecorp.armeria.common.logging.DefaultRequestLog;
+import com.linecorp.armeria.grpc.testing.FooServiceGrpc.FooServiceImplBase;
 import com.linecorp.armeria.grpc.testing.TestServiceGrpc.TestServiceImplBase;
 import com.linecorp.armeria.server.PathMapping;
 import com.linecorp.armeria.server.Server;
@@ -58,6 +59,7 @@ public class GrpcServiceTest {
     public void setUp() {
         grpcService = (GrpcService) new GrpcServiceBuilder()
                 .addService(mock(TestServiceImplBase.class))
+                .addService(mock(FooServiceImplBase.class))
                 .build();
         final Server server = new ServerBuilder().service(grpcService).build();
         when(ctx.server()).thenReturn(server);
@@ -121,6 +123,7 @@ public class GrpcServiceTest {
     public void pathMappings() throws Exception {
         assertThat(grpcService.pathMappings())
                 .containsExactlyInAnyOrder(
+                        PathMapping.ofExact("/armeria.grpc.testing.FooService/replaceFoo"),
                         PathMapping.ofExact("/armeria.grpc.testing.TestService/EmptyCall"),
                         PathMapping.ofExact("/armeria.grpc.testing.TestService/UnaryCall"),
                         PathMapping.ofExact("/armeria.grpc.testing.TestService/UnaryCall2"),

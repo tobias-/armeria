@@ -1,0 +1,24 @@
+
+syntax = "proto3";
+
+package armeria.grpc.testing;
+
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+option java_package = "com.linecorp.armeria.grpc.testing";
+
+service FooService {
+    rpc replaceFoo(stream Foo) returns (stream google.protobuf.Empty);
+}
+
+message Foo {
+    // Either replace with 32 and it works
+    // OR change order of the attributes and it works
+    Foo1 foo1 = 33;
+    Foo2 foo2 = 1;
+}
+
+message Foo1 {}
+message Foo2 {}
