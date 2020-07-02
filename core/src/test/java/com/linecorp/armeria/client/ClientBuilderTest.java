@@ -50,4 +50,10 @@ class ClientBuilderTest {
                                         .build(WebClient.class);
         assertThat(client.uri().toString()).isEqualTo("http://127.0.0.1/foo");
     }
+
+    @Test
+    void endpointWithAuthority() {
+        final WebClient client = Clients.builder("https://foobar@example.com/").build(WebClient.class);
+        assertThat(client.uri().toString()).isEqualTo("https://example.com/");
+    }
 }
